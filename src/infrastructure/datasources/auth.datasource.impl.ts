@@ -49,4 +49,30 @@ export class AuthDataSourceImpl extends AuthDataSource {
       throw CustomError.internalServerError();
     }
   }
+
+  async loginUser(loginUserDto: RegisterUserDto): Promise<UserEntity> {
+    const { email, password } = loginUserDto;
+
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+      throw CustomError.notFound("User not found"); // this message error is not recommended on production
+    }
+
+    const isPasswordValid = this.comparePassword(password, user.password);
+
+    if (!isPasswordValid) {
+      throw CustomError.unauthorized("Invalid password"); // this message error is not recommended on production
+    }
+
+    try {
+      return UserMapper.userEntityFromObject(user);
+    } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
+
+      throw CustomError.internalServerError();
+    }
+  }
 }

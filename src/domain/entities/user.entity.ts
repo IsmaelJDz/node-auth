@@ -7,8 +7,4 @@ export class UserEntity {
     public role: string[],
     public img?: string
   ) {}
-
-  // static create(data: any): UserEntity {
-  //   return new UserEntity(data.id, data.name, data.email, data.password);
-  // }
 }
